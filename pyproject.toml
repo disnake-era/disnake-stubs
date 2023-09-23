@@ -1,0 +1,137 @@
+# SPDX-License-Identifier: MIT
+
+[project]
+name = "disnake-stubs"
+description = "Type safe stubs for disnake."
+authors = [{ name = "elenakrittik", email = "dev.elenakrittik@gmail.com" }]
+dependencies = [
+    "disnake @ git+https://github.com/DisnakeDev/disnake@aee926012fe973d24cc175036086ad7ba2e3a66e",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = { text = "MIT" }
+dynamic = ["version"]
+keywords = [
+    "disnake",
+    "disnake-era",
+    "disnake.ext",
+    "discord",
+    "cogs",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Typing :: Stubs Only",
+]
+
+[project.urls]
+Repository = "https://github.com/disnake-era/disnake-stubs"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = ["pre-commit>=3.3.3"]
+type-check = ["pyright>=1.1.324"]
+lint = ["ruff>=0.0.286"]
+format = ["yapf>=0.40.1"]
+
+[tool.pdm.version]
+source = "file"
+path = "disnake-stubs/__init__.pyi"
+
+[tool.pdm.scripts]
+format = { composite = [
+    "yapf ./disnake-stubs --recursive --in-place",
+    "yapf ./example --recursive --in-place",
+], help = "Run yapf" }
+lint = { cmd = "ruff ./disnake-stubs ./example", help = "Run ruff" }
+type-check = { cmd = "pyright ./disnake-stubs ./example", help = "Run pyright" }
+
+# You should generally use above commands instead
+yapf_check = { composite = [
+    "yapf ./disnake-stubs --recursive --diff",
+    "yapf ./example --recursive --diff",
+] }
+setup_env = { cmd = "pdm install -d -G:all", help = "Set up the local environment and all dependencies" }
+post_setup_env = { cmd = "pre-commit install --install-hooks" }
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportUnnecessaryTypeIgnoreComment = true
+reportMissingTypeStubs = false
+# devs should not interfere with pdm defaults, otherwise it's up to them to fix arising issues
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.8"
+
+[tool.yapf]
+based_on_style = "pep8"
+column_limit = 100
+spaces_around_default_or_named_assign = true
+spaces_around_dict_delimiters = true
+spaces_before_comment = 2
+split_before_dot = true
+coalesce_brackets = true
+dedent_closing_brackets = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+select = [
+    "F",       # pyflakes
+    "E", "W",  # pycodestyle
+    "D2",      # pydocstyle, docstring formatting
+    "D4",      # pydocstyle, docstring structure/content
+    "ANN",     # flake8-annotations
+    "ASYNC",   # flake8-async
+    "S",       # flake8-bandit
+    "B",       # flake8-bugbear
+    "COM",     # flake8-commas
+    "C4",      # flake8-comprehensions
+    "DTZ",     # flake8-datetimez
+    "EM",      # flake8-errmsg
+    "PIE",     # flake8-pie
+    "Q",       # flake8-quotes
+    "RSE",     # flake8-raise
+    "RET",     # flake8-return
+    "SIM",     # flake8-simplify
+    "TID",     # flake8-tidy-imports
+    "TCH",     # flake8-type-checking
+    # "PT",      # flake8-pytest-style
+    "TD",      # flake8-todos
+    # "FIX",     # flake8-fixme
+    "ERA",     # eradicate
+    "PGH",     # pygrep-hooks
+    "PL",      # pylint
+    "TRY",     # tryceratops
+    "FLY",     # flynt
+    "PERF",    # perflint
+    "RUF",     # ruff
+]
+
+ignore = [
+    "D203",    # incompatible with D211
+    "D213",    # incompatible with D212
+    "RET503",  # requires explicit `return None`
+    "F403",    # basically disallows the usage of star imports
+    "EM101",   # forces to not use string literals as exception messages
+    "EM102",   # same as above except for f-string literals
+    "TRY003",  # suggests making a custom exception class, but it's not rust so i gotta ignore this
+    "B028",    # requires explicit `stackelevel=...` in warnings.warn() calls
+    "PGH003",  # requires explicit error in type: ignores
+    "ANN401",  # no Any in **extras
+    "PLR0912", # too much branches
+]
